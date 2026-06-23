@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "jobhub-backend"
+version = "0.1.0"
+description = "JobHub: South African Employment Platform"
+authors = ["LetlapeFoundation <dev@letlapefoundation.org>"]
+readme = "README.md"
+license = "TBD"
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
