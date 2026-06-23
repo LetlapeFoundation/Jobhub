@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #000000;
+  --primary-light: #1f1f1f;
+  --primary-dark: #000000;
+  --accent: #ff6b00;
+  --accent-light: #ff8c33;
+  --success: #10b981;
+  --error: #ef4444;
+  --warning: #f59e0b;
+  --info: #3b82f6;
+}
+
+* {
+  @apply box-border;
+}
+
+body {
+  @apply bg-white text-gray-900 font-sans;
+}
+
+button {
+  @apply transition-colors duration-200 ease-in-out;
+}
+
+.btn-primary {
+  @apply bg-black text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed;
+}
+
+.btn-secondary {
+  @apply bg-gray-200 text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-300 disabled:bg-gray-300 disabled:cursor-not-allowed;
+}
+
+.btn-accent {
+  @apply bg-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-orange-700 disabled:bg-orange-400 disabled:cursor-not-allowed;
+}
+
+.card {
+  @apply bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow;
+}
+
+.input {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent;
+}
+
+.badge {
+  @apply inline-block px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-900;
+}
+
+.badge-verified {
+  @apply bg-green-100 text-green-900;
+}
+
+.badge-pending {
+  @apply bg-yellow-100 text-yellow-900;
+}
+
+.badge-rejected {
+  @apply bg-red-100 text-red-900;
+}
