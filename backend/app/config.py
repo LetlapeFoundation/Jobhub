@@ -1,8 +1,27 @@
 """Application configuration and environment variables."""
 
+import json
+import os
 from typing import List
 
 from pydantic_settings import BaseSettings
+
+# -----------------------------------------------------------------------
+# Pre-process list-typed environment variables so they work whether the
+# operator sets them as comma-separated strings (Replit Secrets) or as
+# JSON arrays.  pydantic-settings expects JSON arrays for List[str] fields,
+# so we normalise them here before the Settings class is instantiated.
+# -----------------------------------------------------------------------
+def _normalise_list_env(var_name: str) -> None:
+    raw = os.environ.get(var_name, "")
+    if raw and not raw.startswith("["):
+        os.environ[var_name] = json.dumps(
+            [item.strip() for item in raw.split(",") if item.strip()]
+        )
+
+
+_normalise_list_env("ALLOWED_HOSTS")
+_normalise_list_env("CORS_ORIGINS")
 
 
 class Settings(BaseSettings):
@@ -12,8 +31,15 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
     DEBUG: bool = True
     SECRET_KEY: str = "dev-secret-key-change-in-production"
-    ALLOWED_HOSTS: List[str] = ["localhost", "127.0.0.1", "0.0.0.0"]
+    # Accepted as a JSON list OR a comma-separated string via env var.
+    # Default includes wildcard so the app boots on Replit without extra host config;
+    # override with a stricter value in production.
+    ALLOWED_HOSTS: List[str] = ["localhost", "127.0.0.1", "0.0.0.0", "*"]
+    # Accepted as a JSON list OR a comma-separated string via env var.
     CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:8000"]
+
+    # Runtime port — Replit injects $PORT; falls back to 8000
+    PORT: int = 8000
 
     # Database
     DATABASE_URL: str = (
@@ -32,9 +58,9 @@ class Settings(BaseSettings):
     JWT_EXPIRATION_HOURS: int = 24
     JWT_REFRESH_EXPIRATION_DAYS: int = 7
 
-    # Email
+    # Email — defaults match Mailhog for local dev; set real SMTP values for hosted
     SMTP_HOST: str = "localhost"
-    SMTP_PORT: int = 1025  # Mailhog default
+    SMTP_PORT: int = 1025  # Mailhog default; use 587 for SendGrid/Mailgun
     SMTP_USER: str = ""
     SMTP_PASSWORD: str = ""
     SMTP_FROM_EMAIL: str = "noreply@jobhub.co.za"
