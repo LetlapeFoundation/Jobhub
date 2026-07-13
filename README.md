@@ -61,6 +61,67 @@ npm run dev
 
 ---
 
+## Deploying the Backend on Replit
+
+The fastest way to run the JobHub API is to import the GitHub repo into a Replit project.
+The `.replit` file and `run_backend.sh` at the repo root handle everything automatically.
+
+### Steps
+
+1. On [replit.com](https://replit.com), create a new Repl → **Import from GitHub** → paste the repo URL.
+2. Replit will detect `.replit` and use `run_backend.sh` as the run command.
+3. Open the **Secrets** tab (🔒) and add the environment variables below.
+4. Press **Run** — the script installs dependencies and starts the API.
+
+Your backend will be live at `https://<your-repl-name>.replit.app`.
+Interactive API docs are available at `/docs`.
+
+### Environment Variables
+
+| Variable | Required | Description |
+|---|---|---|
+| `DATABASE_URL` | ✅ Required | PostgreSQL connection string (see *Hosted database* below) |
+| `SECRET_KEY` | ✅ Required | Random secret for session signing |
+| `JWT_SECRET` | ✅ Required | Random secret for JWT tokens |
+| `PORT` | Set by Replit | Replit injects this automatically |
+| `ENVIRONMENT` | Optional | `production` to disable debug mode |
+| `ALLOWED_HOSTS` | Optional | Comma-separated trusted hostnames (e.g. `myapp.replit.app`) |
+| `CORS_ORIGINS` | Optional | Comma-separated allowed origins (e.g. `https://myapp.replit.app`) |
+| `REDIS_URL` | Optional | Redis connection string — omit to skip caching/Celery |
+| `SMTP_HOST` | Optional | SMTP server hostname for email sending |
+| `SMTP_PORT` | Optional | SMTP port (587 for TLS, 465 for SSL) |
+| `SMTP_USER` | Optional | SMTP username / API key |
+| `SMTP_PASSWORD` | Optional | SMTP password |
+| `SENTRY_DSN` | Optional | Sentry error tracking DSN |
+
+> **Note:** The API boots cleanly without Redis, Mailhog, or Celery.
+> Features that depend on them (background jobs, email) will return errors if called,
+> but the API itself will start and serve all other endpoints.
+
+### Hosted database (recommended free options)
+
+| Service | Notes |
+|---|---|
+| [Supabase](https://supabase.com) | Free PostgreSQL, generous limits, easy setup |
+| [Neon](https://neon.tech) | Serverless PostgreSQL, free tier |
+| [Railway](https://railway.app) | PostgreSQL + Redis on the same platform |
+
+Once you have a database, set `DATABASE_URL` in Replit Secrets to the connection string
+provided by your chosen service, for example:
+
+```
+DATABASE_URL=******db.example.supabase.co:5432/postgres
+```
+
+Then run Alembic migrations (one-time, from the Replit Shell tab):
+
+```bash
+cd backend
+alembic upgrade head
+```
+
+---
+
 ## Project Structure
 
 ```

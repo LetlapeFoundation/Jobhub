@@ -1,0 +1,15 @@
+# Replit configuration for JobHub backend
+# See run_backend.sh for startup logic.
+
+run = "bash run_backend.sh"
+
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+run = ["bash", "run_backend.sh"]
+deploymentTarget = "cloudrun"
+
+[[ports]]
+localPort = 8000
+externalPort = 80

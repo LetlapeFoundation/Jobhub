@@ -1,6 +1,6 @@
 """Health check endpoint."""
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
@@ -10,7 +10,7 @@ router = APIRouter()
 
 
 @router.get("/health")
-def health_check(db: Session = None) -> dict:
+def health_check() -> dict:
     """Health check endpoint."""
     return {
         "status": "healthy",
@@ -20,7 +20,7 @@ def health_check(db: Session = None) -> dict:
 
 
 @router.get("/health/db")
-def health_check_db(db: Session = next(get_db())) -> dict:
+def health_check_db(db: Session = Depends(get_db)) -> dict:
     """Database connectivity check."""
     try:
         db.execute(text("SELECT 1"))
